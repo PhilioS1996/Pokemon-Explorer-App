@@ -1,22 +1,22 @@
 // the pokemon model with only the values we will use (not the full info from the api)
 class Pokemon {
-  int id;
+  late int id;
+  String urlPath;
   String name;
-  int hpValue; //the hit points of the pokemon
-  int attackValue;
-  int defenseValue;
+  late int hpValue; //the hit points of the pokemon
+  late int attackValue;
+  late int defenseValue;
 
-  Pokemon(
-      {required this.id,
-      required this.name,
-      required this.hpValue,
-      required this.attackValue,
-      required this.defenseValue});
+  Pokemon({
+    required this.urlPath,
+    required this.name,
+  });
 
   Pokemon.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        name = json['name'],
-        hpValue = json['hpValue'],
-        attackValue = json['attackValue'],
-        defenseValue = json['defenseValue'];
+      : id = json['id'] ?? 0,
+        urlPath = json['url'] ?? '',
+        name = json['name'] ?? '',
+        hpValue = json['hpValue'] ?? 0,
+        attackValue = json['attackValue'] ?? 0,
+        defenseValue = json['defenseValue'] ?? 0;
 }

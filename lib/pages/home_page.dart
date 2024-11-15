@@ -11,33 +11,36 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    final databaseProvider =
+    final categoriesProvider =
         Provider.of<CategoriesProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
       body: Center(
         child: ListView.builder(
-          itemCount: databaseProvider.pokemonCategories.length,
+          itemCount: categoriesProvider.pokemonCategories.length,
           itemBuilder: (context, index) => ListTile(
             leading: const Icon(Icons.done),
             title: Text(
-              databaseProvider.pokemonCategories[index].name,
+              categoriesProvider.pokemonCategories[index].name,
             ),
-            onTap: () {
+            onTap: () async {
               if (kDebugMode) {
-                print(databaseProvider.pokemonCategories[index].id);
+                print(categoriesProvider.pokemonCategories[index].id);
               }
-              databaseProvider.setSelectedType(
-                  databaseProvider.pokemonCategories[index].name);
-              Navigator.pushNamed(context, '/type');
+              //set in provider the selected type
+              categoriesProvider.setSelectedType(
+                  categoriesProvider.pokemonCategories[index].name);
+              // do the api call for fetching data base on the type and then navigate to the Type page
+              await categoriesProvider
+                  .fetchType(categoriesProvider.pokemonCategories[index].name
+                      .toLowerCase())
+                  .then((_) => {Navigator.pushNamed(context, '/type')})
+                  .catchError((error) {
+                throw Exception(error);
+              });
             },
           ),
         ),

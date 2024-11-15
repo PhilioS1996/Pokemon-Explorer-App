@@ -1,6 +1,7 @@
 // main
 export 'package:flutter/material.dart';
 export 'package:flutter/foundation.dart';
+export 'dart:convert';
 
 //pages
 export '../pages/home_page.dart';
