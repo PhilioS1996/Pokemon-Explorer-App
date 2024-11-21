@@ -20,7 +20,9 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (context) => const MyHomePage(title: 'Prwti'),
-          '/type': (context) => const TypePage(),
+          '/type': (context) => TypePage(
+                typeselected: Type(name: ''),
+              ),
         },
         title: 'Pokemon Explorer App',
         theme: ThemeData(

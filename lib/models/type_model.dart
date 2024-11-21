@@ -1,14 +1,16 @@
 // model of the types of the pokemons
+import 'package:pokemon_explorer_app/helpers/imports.dart';
+
 import '../models/pokemon_model.dart';
 
 class Type {
   int id = 0;
   String name;
+  Color? mainColor;
+  String? typeIcon;
   List<Pokemon> listOfPokemons = []; //the list of pokemons that have this type
 
-  Type({
-    required this.name,
-  });
+  Type({required this.name, this.mainColor, this.typeIcon});
 
   Type.fromJson(Map<String, dynamic> json)
       : id = json['id'],

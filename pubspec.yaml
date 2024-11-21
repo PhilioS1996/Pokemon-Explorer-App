@@ -58,6 +58,25 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  fonts:
+    - family: Pokemon
+      fonts:
+        - asset: fonts/Pokemon-Solid.ttf
+  assets:
+    - assets/logo-app.png
+    - assets/fire-icon.png
+    - assets/water-icon.png
+    - assets/dark-icon.png
+    - assets/dragon-icon.png
+    - assets/electric-icon.png
+    - assets/fairy-icon.png
+    - assets/ghost-icon.png
+    - assets/grass-icon.png
+    - assets/psychic-icon.png
+    - assets/steel-icon.png
+    - assets/pokeball-open.png
+    - assets/pokeball.png
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:

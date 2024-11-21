@@ -1,7 +1,10 @@
+import 'package:pokemon_explorer_app/helpers/loading_pokeball.dart';
 import '../helpers/imports.dart';
+import 'componets/list_pokemon_view.dart';
 
 class TypePage extends StatefulWidget {
-  const TypePage({super.key});
+  final Type typeselected;
+  const TypePage({super.key, required this.typeselected});
 
   @override
   State<TypePage> createState() => _TypePageState();
@@ -13,76 +16,47 @@ class _TypePageState extends State<TypePage> {
     final categoriesProvider =
         Provider.of<CategoriesProvider>(context, listen: false);
     return PopScope(
-      canPop: false,
-      // The result argument contains the pop result that is defined in `_PageTwo`.
+      canPop: true,
       onPopInvokedWithResult: (bool didPop, result) async {
         if (didPop) {
           categoriesProvider.clearVariables();
           return;
         }
       },
-
       child: Scaffold(
+        backgroundColor: Colors.grey[50],
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text('Type'),
+          backgroundColor: widget.typeselected.mainColor,
+          iconTheme: const IconThemeData(color: Colors.white),
+          title: Text(
+            widget.typeselected.name,
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold),
+          ),
         ),
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              categoriesProvider.selectedTypeName,
-              style: const TextStyle(color: Colors.black),
-            ),
-            Expanded(
-              child: Consumer<CategoriesProvider>(
-                builder: (context, provider, child) {
-                  if (provider.isLoading) {
-                    return const Center(child: CircularProgressIndicator());
+            FutureBuilder(
+                future: categoriesProvider.fetchPokemonsType(),
+                builder: (ctx, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Column(children: [
+                      Center(
+                        child: Text(
+                          'Catching Pokémons',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                      LoadingPokeball(),
+                    ]);
+                  } else if (snapshot.hasError) {
+                    return Text('Error in future builder: ${snapshot.error}');
+                  } else {
+                    return const ListPokemonView();
                   }
-
-                  if (provider.errorMessage != null) {
-                    return Center(
-                        child: Text('Error: ${provider.errorMessage}'));
-                  }
-
-                  final type = provider.typeSelected;
-                  return SingleChildScrollView(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: (provider.itemsShowList <=
-                              provider.typeSelected.listOfPokemons.length)
-                          ? provider.itemsShowList
-                          : provider.typeSelected.listOfPokemons.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                            title: Text(
-                          provider.typeSelected.listOfPokemons[index].name,
-                          style: const TextStyle(color: Colors.black),
-                        ));
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
-            (categoriesProvider.itemsShowList <=
-                    categoriesProvider.typeSelected.listOfPokemons.length)
-                ? IconButton(
-                    onPressed: () {
-                      categoriesProvider.increaseItemsShowList();
-                    },
-                    icon: const Row(
-                      children: [
-                        Icon(Icons.add),
-                        Text(
-                          'Load More',
-                          style: TextStyle(color: Colors.black),
-                        )
-                      ],
-                    ))
-                : const TextButton(
-                    onPressed: null, child: Text('You catchem all'))
+                }),
           ],
         ),
       ),
