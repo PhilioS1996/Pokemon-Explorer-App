@@ -120,20 +120,29 @@ class _MyHomePageState extends State<MyHomePage> {
                                         }
                                       else
                                         {
-                                          if (context.mounted &&
-                                              message == null)
+                                          if (context.mounted)
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(SnackBar(
-                                                    content: Text(message)))
+                                              content: Text(message),
+                                            ))
                                         }
                                     })
                                 .catchError((error) {
-                              throw Exception(error);
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content: Text(
+                                      'Sorry Something Happend! Try Again Later...The journey isn’t over yet!'),
+                                ));
+                              }
                             });
                           },
                         ),
                       ),
                     )),
+            Visibility(
+                visible: categoriesProvider.isLoading,
+                child: const LoadingPokeball())
           ],
         ),
       ),
