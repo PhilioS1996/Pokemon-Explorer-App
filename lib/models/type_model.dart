@@ -1,8 +1,6 @@
 // model of the types of the pokemons
 import 'package:pokemon_explorer_app/helpers/imports.dart';
 
-import '../models/pokemon_model.dart';
-
 class Type {
   int id = 0;
   String name;
@@ -18,9 +16,4 @@ class Type {
         listOfPokemons = (json['pokemon'] as List)
             .map((e) => Pokemon.fromJson(e['pokemon']))
             .toList(); //desirialized json dynamic list to list of pokemon objects
-  // (json['pokemon'] as List);
-
-  // (json['pokemon'] as List)
-  //     .map((e) => Pokemon.fromJson(e))
-  //     .toList(); //desirialized json dynamic list to list of pokemon objects
 }

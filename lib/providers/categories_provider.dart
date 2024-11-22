@@ -1,5 +1,3 @@
-import 'package:pokemon_explorer_app/models/pokemon_model.dart';
-
 import '../helpers/imports.dart';
 import 'package:http/http.dart' as http;
 
@@ -7,7 +5,7 @@ class CategoriesProvider extends ChangeNotifier {
   String _selectedTypeName = ''; // the selected type from the list in homepage
   Type _typeSelected = Type(name: ''); //the Type object after the api call
   List<Pokemon> tempListPokemons = [];
-  late Type choosenType;
+  late Type choosenType; //is used for type_page when the data have not set
   bool isLoading = false;
   bool isLoadingPokemon = false;
   TextEditingController searchPokemonByName = TextEditingController();
@@ -124,7 +122,7 @@ class CategoriesProvider extends ChangeNotifier {
             } else {
               // If the server did not return a 200 OK response,
               errorMessage = data.reasonPhrase;
-              // return errorMessage;
+              return errorMessage;
             }
           });
         }
@@ -142,19 +140,22 @@ class CategoriesProvider extends ChangeNotifier {
   Future loadMorePokemonsType() async {
     changeLoadingPokemon();
     errorMessagePokemon = '';
+    notifyListeners();
     try {
       if (_typeSelected.listOfPokemons.isNotEmpty) {
         var pokemonsList = _typeSelected.listOfPokemons;
-        for (int i = (itemsShowList + 1); i <= (itemsShowList + 10); i++) {
-          await http.get(Uri.parse(pokemonsList[i].urlPath)).then((data) {
-            if (data.statusCode == 200) {
-              pokemonsList[i] = Pokemon.fromJson(jsonDecode(data.body));
-            } else {
-              // If the server did not return a 200 OK response,
-              errorMessage = data.reasonPhrase;
-              // return errorMessage;
-            }
-          });
+        for (int i = (itemsShowList + 1); i < (itemsShowList + 10); i++) {
+          if (i < pokemonsList.length) {
+            await http.get(Uri.parse(pokemonsList[i].urlPath)).then((data) {
+              if (data.statusCode == 200) {
+                pokemonsList[i] = Pokemon.fromJson(jsonDecode(data.body));
+              } else {
+                // If the server did not return a 200 OK response,
+                errorMessage = data.reasonPhrase;
+                return errorMessage;
+              }
+            });
+          }
         }
         tempListPokemons = _typeSelected.listOfPokemons;
       }

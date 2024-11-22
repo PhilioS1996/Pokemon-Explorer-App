@@ -1,6 +1,4 @@
-import '../../helpers/help_functions.dart';
 import '../../helpers/imports.dart';
-import '../../models/pokemon_model.dart';
 
 class ListPokemonView extends StatelessWidget {
   const ListPokemonView({super.key});
@@ -20,9 +18,19 @@ class ListPokemonView extends StatelessWidget {
             return Center(
               child: SizedBox(
                 width: MediaQuery.of(context).size.width / 1.2,
-                child: Text(
-                  'Something Happend...Aww noo \n "Team Rocket, blast off at the speed of light! Surrender now, or prepare to fight!${provider.errorMessage}',
-                  style: const TextStyle(fontSize: 18),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Something Happend...Aww noo \n "Team Rocket, blast off at the speed of light! Surrender now, or prepare to fight!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    IconButton(
+                        onPressed: () => Navigator.of(context)
+                            .popUntil(ModalRoute.withName("/")),
+                        icon: const Icon(Icons.home))
+                  ],
                 ),
               ),
             );
@@ -185,7 +193,8 @@ class ListPokemonCards extends StatelessWidget {
                               borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(10),
                                   bottomRight: Radius.circular(10))),
-                          width: MediaQuery.of(context).size.width / 2,
+                          constraints: BoxConstraints(
+                              minWidth: MediaQuery.of(context).size.width / 2),
                           alignment: Alignment.center,
                           child: Padding(
                             padding: const EdgeInsets.all(3.0),
@@ -233,10 +242,21 @@ class ListPokemonCards extends StatelessWidget {
                                           color: Colors.white,
                                           borderRadius:
                                               BorderRadius.circular(10)),
-                                      child: Image.network(
-                                        fit: BoxFit.contain,
-                                        listToSearch[index].imageUrlPath,
-                                      ),
+                                      child: listToSearch[index].imageUrlPath !=
+                                              ''
+                                          ? Image.network(
+                                              fit: BoxFit.contain,
+                                              listToSearch[index].imageUrlPath,
+                                            )
+                                          : const Center(
+                                              child: Text(
+                                                'Photo not found',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ),
                                     )
                                   ],
                                 ),

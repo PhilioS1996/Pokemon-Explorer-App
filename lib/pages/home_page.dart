@@ -32,85 +32,108 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 38.0),
-              child:
-                  Text('Hello fellow trainer', style: TextStyle(fontSize: 18)),
-            ),
             Padding(
-              padding: const EdgeInsets.only(top: 38.0),
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1, // number of items in each row
-                  mainAxisSpacing: 28.0, // spacing between rows
-                  crossAxisSpacing: 28.0, // spacing between columns
-                  childAspectRatio: 5,
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Text(
+                'Hello fellow trainer',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[500],
                 ),
+              ),
+            ),
+            const Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: EdgeInsets.only(top: 20.0, left: 10),
+                child: Text('Choose Type',
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w500)),
+              ),
+            ),
+            ListView.builder(
                 padding: const EdgeInsets.all(8.0),
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: categoriesProvider.pokemonCategories.length,
-                itemBuilder: (context, index) => Material(
-                  borderRadius: const BorderRadius.all(Radius.circular(8)),
-                  elevation: 10,
-                  child: ListTile(
-                    tileColor:
-                        categoriesProvider.pokemonCategories[index].mainColor,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                    ),
-                    leading: Image(
-                        width: 40,
-                        height: 40,
-                        image: AssetImage(categoriesProvider
-                                .pokemonCategories[index].typeIcon ??
-                            '404')),
-                    title: Text(
-                      categoriesProvider.pokemonCategories[index].name,
-                      style: const TextStyle(
+                itemBuilder: (context, index) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: Material(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(8)),
                         color: Colors.white,
-                        fontSize: 20,
+                        elevation: 5,
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                          tileColor: Colors.white,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
+                          leading: Image(
+                            width: 40,
+                            height: 40,
+                            image: AssetImage(categoriesProvider
+                                    .pokemonCategories[index].typeIcon ??
+                                'pokemon image'),
+                          ),
+                          trailing: Icon(
+                            Icons.arrow_forward,
+                            color: categoriesProvider
+                                .pokemonCategories[index].mainColor,
+                          ),
+                          title: Text(
+                            categoriesProvider.pokemonCategories[index].name,
+                            style: const TextStyle(
+                              color: Colors.black87,
+                              fontSize: 20,
+                            ),
+                          ),
+                          onTap: () async {
+                            if (kDebugMode) {
+                              print(categoriesProvider
+                                  .pokemonCategories[index].id);
+                            }
+                            //set in provider the selected type
+                            categoriesProvider.setSelectedType(
+                                categoriesProvider.pokemonCategories[index]);
+                            // do the api call for fetching data base on the type and then navigate to the Type page
+                            await categoriesProvider
+                                .fetchType(categoriesProvider
+                                    .pokemonCategories[index].name
+                                    .toLowerCase())
+                                .then((message) => {
+                                      if (context.mounted && message == null)
+                                        {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => TypePage(
+                                                typeselected: categoriesProvider
+                                                    .pokemonCategories[index],
+                                              ),
+                                            ),
+                                          )
+                                        }
+                                      else
+                                        {
+                                          if (context.mounted &&
+                                              message == null)
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                                    content: Text(message)))
+                                        }
+                                    })
+                                .catchError((error) {
+                              throw Exception(error);
+                            });
+                          },
+                        ),
                       ),
-                    ),
-                    onTap: () async {
-                      if (kDebugMode) {
-                        print(categoriesProvider.pokemonCategories[index].id);
-                      }
-                      //set in provider the selected type
-                      categoriesProvider.setSelectedType(
-                          categoriesProvider.pokemonCategories[index]);
-                      // do the api call for fetching data base on the type and then navigate to the Type page
-                      await categoriesProvider
-                          .fetchType(categoriesProvider
-                              .pokemonCategories[index].name
-                              .toLowerCase())
-                          .then((message) => {
-                                if (context.mounted && message == null)
-                                  {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => TypePage(
-                                              typeselected: categoriesProvider
-                                                  .pokemonCategories[index])),
-                                    )
-                                  }
-                                else
-                                  {
-                                    if (context.mounted && message == null)
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                              SnackBar(content: Text(message)))
-                                  }
-                              })
-                          .catchError((error) {
-                        throw Exception(error);
-                      });
-                    },
-                  ),
-                ),
-              ),
-            ),
+                    )),
           ],
         ),
       ),

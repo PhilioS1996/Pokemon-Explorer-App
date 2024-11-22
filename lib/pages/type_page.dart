@@ -1,6 +1,4 @@
-import 'package:pokemon_explorer_app/helpers/loading_pokeball.dart';
 import '../helpers/imports.dart';
-import 'componets/list_pokemon_view.dart';
 
 class TypePage extends StatefulWidget {
   final Type typeselected;

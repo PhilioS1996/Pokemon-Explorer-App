@@ -18,8 +18,9 @@ class Pokemon {
         urlPath =
             json['url'] ?? 'https://pokeapi.co/api/v2/pokemon/${json['name']}',
         name = json['name'] ?? '',
-        imageUrlPath =
-            json['sprites'] != null ? json['sprites']['front_default'] : '',
+        imageUrlPath = json['sprites'] != null
+            ? (json['sprites']['front_default'] ?? '')
+            : '',
         hpValue = json['stats'] != null
             ? (json['stats'] as List)
                 .toList()
