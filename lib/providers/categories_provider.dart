@@ -80,9 +80,14 @@ class CategoriesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void changeLoadingType() {
+    isLoading = !isLoading;
+    notifyListeners();
+  }
+
 // future function for type pokemon api call
   Future<dynamic> fetchType(String typeName) async {
-    isLoading = true;
+    changeLoadingType();
     errorMessage = null;
     final response =
         await http.get(Uri.parse('https://pokeapi.co/api/v2/type/$typeName'));
@@ -101,10 +106,11 @@ class CategoriesProvider extends ChangeNotifier {
         return errorMessage;
       }
     } catch (e) {
+      changeLoadingType();
       errorMessage = e.toString();
       return errorMessage;
     } finally {
-      isLoading = false;
+      changeLoadingType();
       notifyListeners();
     }
   }
