@@ -1,6 +1,6 @@
 # pokemon_explorer_app
 
-A new Flutter project.
+A Pokemon search app, based on selected type.
 
 ## Getting Started
 
