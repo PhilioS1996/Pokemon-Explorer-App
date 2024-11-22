@@ -127,6 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             ))
                                         }
                                     })
+                                // ignore: body_might_complete_normally_catch_error
                                 .catchError((error) {
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context)
